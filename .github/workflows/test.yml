@@ -47,10 +47,14 @@ jobs:
         sys.path.insert(0, '.')
         from tensor.tensor1d import Tensor
         t = Tensor.arange(5)
-        print('✅ Basic test passed:', t)
+        print('Basic test passed:', t)
         "
+      env:
+        PYTHONIOENCODING: utf-8
 
     - name: Run tests
       run: |
-        export PYTHONPATH=.
         python tensor/tests/test_simple.py
+      env:
+        PYTHONPATH: .
+        PYTHONIOENCODING: utf-8

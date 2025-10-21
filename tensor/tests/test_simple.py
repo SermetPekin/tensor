@@ -12,30 +12,30 @@ from tensor.tensor1d import Tensor
 
 def test_basic_functionality():
     """Test basic tensor functionality."""
-    print("🧪 Running basic functionality tests...")
+    print("Running basic functionality tests...")
     
     # Test 1: Empty tensor creation
-    print("  ✓ Testing empty tensor creation...")
+    print("  * Testing empty tensor creation...")
     t1 = Tensor.empty(3)
     assert len(t1) == 3
     print(f"    Created empty tensor: {t1}")
     
     # Test 2: Range tensor creation
-    print("  ✓ Testing range tensor creation...")
+    print("  * Testing range tensor creation...")
     t2 = Tensor.arange(5)
     assert len(t2) == 5
     assert t2.tolist() == [0.0, 1.0, 2.0, 3.0, 4.0]
     print(f"    Created range tensor: {t2}")
     
     # Test 3: Indexing
-    print("  ✓ Testing indexing...")
+    print("  * Testing indexing...")
     assert t2[0].item() == 0.0
     assert t2[2].item() == 2.0
     assert t2[-1].item() == 4.0
     print("    Indexing works correctly")
     
     # Test 4: Slicing
-    print("  ✓ Testing slicing...")
+    print("  * Testing slicing...")
     s1 = t2[1:4]
     assert s1.tolist() == [1.0, 2.0, 3.0]
     
@@ -44,7 +44,7 @@ def test_basic_functionality():
     print("    Slicing works correctly")
     
     # Test 5: Arithmetic
-    print("  ✓ Testing arithmetic...")
+    print("  * Testing arithmetic...")
     t3 = t2.addf(5.0)
     assert t3.tolist() == [5.0, 6.0, 7.0, 8.0, 9.0]
     
@@ -52,12 +52,12 @@ def test_basic_functionality():
     assert t4.tolist() == [0.0, 2.0, 4.0, 6.0, 8.0]
     print("    Arithmetic operations work correctly")
     
-    print("🎉 All tests passed!")
+    print("All tests passed!")
 
 
 def test_error_conditions():
     """Test error conditions."""
-    print("🧪 Testing error conditions...")
+    print("Testing error conditions...")
     
     t = Tensor.arange(3)
     
@@ -66,21 +66,21 @@ def test_error_conditions():
         _ = t["invalid"]
         assert False, "Should have raised TypeError"
     except TypeError:
-        print("  ✓ Invalid string index correctly raises TypeError")
+        print("  * Invalid string index correctly raises TypeError")
     
     # Test invalid arithmetic
     try:
         t.add("invalid")
         assert False, "Should have raised TypeError"
     except TypeError:
-        print("  ✓ Invalid arithmetic correctly raises TypeError")
+        print("  * Invalid arithmetic correctly raises TypeError")
     
-    print("🎉 Error condition tests passed!")
+    print("Error condition tests passed!")
 
 
 def main():
     """Run all tests."""
-    print("🚀 Starting tensor1d test suite...")
+    print("Starting tensor1d test suite...")
     print("=" * 50)
     
     try:
@@ -89,10 +89,10 @@ def main():
         test_error_conditions()
         print()
         print("=" * 50)
-        print("✅ ALL TESTS PASSED! 🎉")
+        print("ALL TESTS PASSED!")
         return 0
     except Exception as e:
-        print(f"❌ Test failed: {e}")
+        print(f"Test failed: {e}")
         import traceback
         traceback.print_exc()
         return 1
