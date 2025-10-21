@@ -233,19 +233,51 @@ char* tensor_to_string(Tensor* t) {
     // if we already have a string representation, return it
     if (t->repr != NULL) { return t->repr; }
     // otherwise create a new string representation
-    int max_size = t->size * 20 + 3; // 20 chars/number, brackets and commas
+    // Conservative estimate: each float can be up to 15 chars (e.g., "-123456789.1"), 
+    // plus ", " separator (2 chars), plus brackets and null terminator
+    int max_size = t->size * 20 + 10; // More conservative buffer size
     t->repr = mallocCheck(max_size);
     char* current = t->repr;
-    current += sprintf(current, "[");
+    char* buffer_end = t->repr + max_size - 1; // Leave space for null terminator
+    
+    // Use snprintf for safer string operations
+    int written = snprintf(current, buffer_end - current, "[");
+    if (written > 0 && current + written < buffer_end) {
+        current += written;
+    }
+    
     for (int i = 0; i < t->size; i++) {
         float val = tensor_getitem(t, i);
-        current += sprintf(current, "%.1f", val);
+        
+        // Format the number
+        written = snprintf(current, buffer_end - current, "%.1f", val);
+        if (written > 0 && current + written < buffer_end) {
+            current += written;
+        } else {
+            break; // Buffer full, stop to prevent overflow
+        }
+        
+        // Add separator if not the last element
         if (i < t->size - 1) {
-            current += sprintf(current, ", ");
+            written = snprintf(current, buffer_end - current, ", ");
+            if (written > 0 && current + written < buffer_end) {
+                current += written;
+            } else {
+                break; // Buffer full, stop to prevent overflow
+            }
         }
     }
-    current += sprintf(current, "]");
-    // ensure we didn't write past the end of the buffer
+    
+    // Add closing bracket
+    written = snprintf(current, buffer_end - current, "]");
+    if (written > 0 && current + written < buffer_end) {
+        current += written;
+    }
+    
+    // Ensure null termination
+    *current = '\0';
+    
+    // Verify we didn't overflow (this should not trigger with our conservative sizing)
     assert(current - t->repr < max_size);
     return t->repr;
 }

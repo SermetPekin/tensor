@@ -78,6 +78,31 @@ def test_error_conditions():
     print("Error condition tests passed!")
 
 
+def test_large_tensors():
+    """Test larger tensors to ensure buffer sizes are adequate."""
+    print("Testing large tensor string representations...")
+    
+    # Test various larger sizes
+    for size in [10, 50, 100]:
+        print(f"  * Testing tensor of size {size}...")
+        t = Tensor.arange(size)
+        str_repr = str(t)
+        
+        # Basic sanity checks
+        assert str_repr.startswith('[')
+        assert str_repr.endswith(']')
+        assert '0.0' in str_repr  # First element should be 0.0
+        
+        # Check that last element is correct
+        expected_last = float(size - 1)
+        assert f'{expected_last}' in str_repr  # Just check the number is there
+        
+        # Verify the actual last element value
+        assert t[-1].item() == expected_last
+    
+    print("Large tensor tests passed!")
+
+
 def main():
     """Run all tests."""
     print("Starting tensor1d test suite...")
@@ -87,6 +112,8 @@ def main():
         test_basic_functionality()
         print()
         test_error_conditions()
+        print()
+        test_large_tensors()
         print()
         print("=" * 50)
         print("ALL TESTS PASSED!")

@@ -6,6 +6,7 @@
 .venv/
 venv/
 env/
+uv.lock
 
 # Python cache and compiled files
 __pycache__/
