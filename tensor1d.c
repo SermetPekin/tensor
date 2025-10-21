@@ -150,6 +150,7 @@ void tensor_setitem(Tensor* t, int ix, float val) {
     }
     int idx = logical_to_physical(t, ix);
     storage_setitem(t->storage, idx, val);
+    t->repr = NULL;  
 }
 
 // same as .item() on a torch.Tensor: strips 1-element Tensor to simple scalar
