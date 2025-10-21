@@ -29,6 +29,9 @@ build/
 *.egg-info/
 *.log
 
+# Backup files
+*.bak
+
 # C extensions and build artifacts
 *.so
 *.dylib
