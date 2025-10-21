@@ -1,6 +1,6 @@
 import pytest
 import torch
-import tensor1d
+import tensor.tensor1d as tensor1d
 
 def assert_tensor_equal(torch_tensor, tensor1d_tensor):
     assert torch_tensor.tolist() == tensor1d_tensor.tolist()

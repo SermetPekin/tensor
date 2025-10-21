@@ -255,6 +255,22 @@ void tensor_print(Tensor* t) {
     printf("%s\n", str);
 }
 
+void tensor_incref(Tensor* t) {
+    if (t != NULL && t->storage != NULL) {
+        t->storage->ref_count++;
+    }
+}
+
+void tensor_decref(Tensor* t) {
+    if (t != NULL && t->storage != NULL) {
+        t->storage->ref_count--;
+        if (t->storage->ref_count <= 0) {
+            free(t->storage->data);
+            free(t->storage);
+        }
+    }
+}
+
 void tensor_free(Tensor* t) {
     storage_decref(t->storage);
     free(t->repr);

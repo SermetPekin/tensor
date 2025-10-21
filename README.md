@@ -1,13 +1,69 @@
-# tensor
+# Tensor Library
+
+[![Test Build](https://github.com/SermetPekin/tensor/actions/workflows/test.yml/badge.svg)](https://github.com/SermetPekin/tensor/actions/workflows/test.yml)
+
+A simple 1D tensor library with C extensions for high-performance computing, inspired by PyTorch.
 
 In this module we build a small `Tensor` in C, along the lines of `torch.Tensor` or `numpy.ndarray`. The current code implements a simple 1-dimensional float tensor that we can access and slice. We get to see that the tensor object maintains both a `Storage` that holds the 1-dimensional data as it is in physical memory, and a `View` over that memory that has some start, end, and stride. This allows us to efficiently slice into a Tensor without creating any additional memory, because the `Storage` is re-used, while the `View` is updated to reflect the new start, end, and stride. We then get to see how we can wrap our C tensor into a Python module, just like PyTorch and numpy do.
 
-The source code of the 1D Tensor is in [tensor1d.h](tensor1d.h) and [tensor1d.c](tensor1d.c). You can compile and run this simply as:
+## Building and Testing
+
+The source code of the 1D Tensor is in [tensor/src/tensor1d.h](tensor/src/tensor1d.h) and [tensor/src/tensor1d.c](tensor/src/tensor1d.c). 
+
+### Build C extension:
 
 ```bash
-gcc -Wall -O3 tensor1d.c -o tensor1d
+# Linux/macOS
+cd tensor/src
+gcc -O3 -shared -fPIC -o ../_tensor1d.so tensor1d.c -lm
+
+# Windows  
+cd tensor/src
+gcc -O3 -shared -o ../_tensor1d.dll tensor1d.c
+```
+
+### Test:
+```bash
+python tensor/tests/test_simple.py
+```
+
+## Usage
+
+```python
+from tensor.tensor1d import Tensor
+
+# Create tensors
+t1 = Tensor.empty(5)        # [0.0, 0.0, 0.0, 0.0, 0.0]
+t2 = Tensor.arange(5)       # [0.0, 1.0, 2.0, 3.0, 4.0]
+
+# Indexing and slicing
+print(t2[0])                # [0.0]
+print(t2[1:4])              # [1.0, 2.0, 3.0]
+print(t2[::2])              # [0.0, 2.0, 4.0]
+
+# Arithmetic
+t3 = t2.addf(5.0)           # [5.0, 6.0, 7.0, 8.0, 9.0]
+t4 = t2.add(t2)             # [0.0, 2.0, 4.0, 6.0, 8.0]
+```
+
+### Standalone C program:
+
+You can also compile and run the C code directly:
+
+```bash
+cd tensor/src
+gcc -Wall -O3 tensor1d.c -o tensor1d -lm
 ./tensor1d
 ```
+
+## Authors
+
+- **Andrej Karpathy** - Original C implementation
+- **SermetPekin** - Python packaging and cross-platform support
+
+## License
+
+MIT
 
 The code contains both the `Tensor` class, and also a short `int main` that just has a toy example. We can now wrap up this C code into a Python module so we can access it there. For that, compile it as a shared library:
 
