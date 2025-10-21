@@ -1,6 +1,6 @@
 # Tensor Library
 
-[![Test Build](https://github.com/SermetPekin/tensor/actions/workflows/test.yml/badge.svg)](https://github.com/SermetPekin/tensor/actions/workflows/test.yml)
+[![Test Build](https://github.com/SermetPekin/tensor/actions/workflows/test.yml/badge.svg?1)](https://github.com/SermetPekin/tensor/actions/workflows/test.yml?1)
 
 A simple 1D tensor library with C extensions for high-performance computing, inspired by PyTorch.
 
