@@ -1,0 +1,64 @@
+# IDE and Editor files
+.vscode/
+.idea/
+
+# Virtual environments
+.venv/
+venv/
+env/
+uv.lock
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+
+# System files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+*.log
+
+# Backup files
+*.bak
+
+# C extensions and build artifacts
+*.so
+*.dylib
+*.dll
+*.o
+*.a
+*.out
+tensor1d
+libtensor1d.so
+_tensor1d*
+
+# Test and coverage files
+.pytest_cache/
+.coverage
+htmlcov/
+.hypothesis/
+coverage.xml
+*.cover
+
+# Python version management
+.python-version
+
+# Package management
+.pdm.toml
+poetry.lock
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json

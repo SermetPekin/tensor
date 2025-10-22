@@ -34,7 +34,53 @@ void tensor_incref(Tensor* t);
 void tensor_decref(Tensor* t);
 void tensor_free(Tensor* t);
 """)
-lib = ffi.dlopen("./libtensor1d.so")  # Make sure to compile the C code into a shared library
+
+# Try different methods to load the CFFI extension
+import os
+lib = None
+
+try:
+    # Method 1: Import as a module (preferred)
+    from . import _tensor1d
+    lib = _tensor1d.lib
+    print("Loaded CFFI extension via module import")
+except ImportError:
+    try:
+        # Method 2: Direct shared library loading (cross-platform)
+        import glob
+        current_dir = os.path.dirname(__file__)
+        # Look for CFFI extensions with different platforms extensions
+        patterns = [
+            '_tensor1d*.so',      # Linux/macOS
+            '_tensor1d*.pyd',     # Windows
+            '_tensor1d*.dll',     # Windows alternative
+        ]
+        
+        so_files = []
+        for pattern in patterns:
+            so_files.extend(glob.glob(os.path.join(current_dir, pattern)))
+        
+        if so_files:
+            so_path = so_files[0]  # Use the first match
+            lib = ffi.dlopen(so_path)
+            print(f"Loaded CFFI extension via direct loading: {os.path.basename(so_path)}")
+        else:
+            raise FileNotFoundError("No compiled extension found")
+    except (OSError, FileNotFoundError):
+        try:
+            # Method 3: Fallback to traditional shared library
+            lib = ffi.dlopen("./libtensor1d.so")
+            print("Loaded via traditional shared library")
+        except OSError:
+            try:
+                lib = ffi.dlopen("./tensor/src/libtensor1d.so")
+                print("Loaded via tensor/src shared library")
+            except OSError as e:
+                raise ImportError(f"Could not load tensor library: {e}")
+
+if lib is None:
+    raise ImportError("Failed to load tensor library")
+
 # -----------------------------------------------------------------------------
 
 class Tensor:
@@ -108,6 +154,34 @@ class Tensor:
 
     def item(self):
         return lib.tensor_item(self.tensor)
+
+    def addf(self, value):
+        """Add a float value to this tensor"""
+        c_tensor = lib.tensor_addf(self.tensor, float(value))
+        if c_tensor == ffi.NULL:
+            raise ValueError("RuntimeError: tensor addf returned NULL")
+        return Tensor(c_tensor=c_tensor)
+
+    def add(self, other):
+        """Add another tensor to this tensor"""
+        if isinstance(other, Tensor):
+            c_tensor = lib.tensor_add(self.tensor, other.tensor)
+            if c_tensor == ffi.NULL:
+                raise ValueError("RuntimeError: tensor add returned NULL")
+            return Tensor(c_tensor=c_tensor)
+        else:
+            raise TypeError("Invalid type for addition")
+
+    @classmethod
+    def arange(cls, size):
+        """Create a tensor with values from 0 to size-1"""
+        c_tensor = lib.tensor_arange(size)
+        return cls(c_tensor=c_tensor)
+
+    @classmethod
+    def empty(cls, size):
+        """Create an empty tensor of given size"""
+        return cls(size)
 
 def empty(size):
     return Tensor(size)
